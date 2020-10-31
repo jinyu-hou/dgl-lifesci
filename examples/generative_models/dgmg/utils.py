@@ -550,7 +550,7 @@ def get_DGMG_smile(env, mol):
 
     return canonical_smile, random_smile
 
-def preprocess_dataset(atom_types, bond_types, smiles, max_num_atoms=23):
+def preprocess_dataset(atom_types, bond_types, smiles, max_num_atoms=200):
     """Preprocess the dataset
 
     1. Standardize the SMILES of the dataset
