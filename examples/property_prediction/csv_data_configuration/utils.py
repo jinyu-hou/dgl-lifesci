@@ -149,14 +149,9 @@ def split_dataset(args, dataset):
         Test subset
     """
     train_ratio, val_ratio, test_ratio = map(float, args['split_ratio'].split(','))
-    if args['split'] == 'scaffold_decompose':
+    if args['split'] == 'scaffold':
         train_set, val_set, test_set = ScaffoldSplitter.train_val_test_split(
-            dataset, frac_train=train_ratio, frac_val=val_ratio, frac_test=test_ratio,
-            scaffold_func='decompose')
-    elif args['split'] == 'scaffold_smiles':
-        train_set, val_set, test_set = ScaffoldSplitter.train_val_test_split(
-            dataset, frac_train=train_ratio, frac_val=val_ratio, frac_test=test_ratio,
-            scaffold_func='smiles')
+            dataset, frac_train=train_ratio, frac_val=val_ratio, frac_test=test_ratio)
     elif args['split'] == 'random':
         train_set, val_set, test_set = RandomSplitter.train_val_test_split(
             dataset, frac_train=train_ratio, frac_val=val_ratio, frac_test=test_ratio)

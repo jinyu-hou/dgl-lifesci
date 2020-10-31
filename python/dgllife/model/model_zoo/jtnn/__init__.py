@@ -5,4 +5,4 @@
 #
 # JTNN module
 
-from .jtnn_vae import DGLJTNNVAE
+# from .jtnn_vae import DGLJTNNVAE

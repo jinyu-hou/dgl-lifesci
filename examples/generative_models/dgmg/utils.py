@@ -594,8 +594,10 @@ def preprocess_dataset(atom_types, bond_types, smiles, max_num_atoms=23):
             continue
 
         valid_smiles.append(standard_s)
+        # valid_smiles.append(raw_s)
 
     valid_smiles = list(set(valid_smiles))
+    print(f"valid smiles: {len(valid_smiles)}\n")
     return valid_smiles
 
 def download_data(dataset, fname):
@@ -663,7 +665,9 @@ def configure_new_dataset(dataset, train_file, val_file):
     assert train_file is not None, 'Expect a file of SMILES for training, got None.'
     assert val_file is not None, 'Expect a file of SMILES for validation, got None.'
     train_smiles = load_smiles_from_file(train_file)
+    print(f"loaded train smiles: {len(train_smiles)}\n")
     val_smiles = load_smiles_from_file(val_file)
+    print(f"loaded val smiles: {len(val_smiles)}\n")
     all_smiles = train_smiles + val_smiles
 
     # Get all atom and bond types in the dataset
@@ -793,12 +797,14 @@ class MoleculeDataset(object):
             fname = '_'.join([dataset_prefix, 'train.txt'])
             download_data(self.dataset, fname)
             smiles = load_smiles_from_file(fname)
+            print(f"unprocessed smiles train: {len(smiles)}\n")
             self.train_set = self._create_a_subset(smiles)
 
         if 'val' in self.modes:
             fname = '_'.join([dataset_prefix, 'val.txt'])
             download_data(self.dataset, fname)
             smiles = load_smiles_from_file(fname)
+            print(f"unprocessed smiles val: {len(smiles)}\n")
             # We evenly divide the smiles into multiple susbets with multiprocess
             self.val_set = self._create_a_subset(smiles)
 
@@ -845,6 +851,7 @@ class Subset(Dataset):
                 continue
             smiles_.append(s)
             mols.append(m)
+        print(f"processed smiles: {len(smiles_)}\n")
         self.smiles = smiles_
         self.mols = mols
 

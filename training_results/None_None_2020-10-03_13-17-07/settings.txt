@@ -1,0 +1,16 @@
+seed	0
+warmup_epochs	10
+dataset	None
+order	None
+train_file	None
+val_file	None
+log_dir	./training_results/None_None_2020-10-03_13-17-07
+num_processes	32
+master_ip	127.0.0.1
+master_port	12345
+node_hidden_size	128
+num_propagation_rounds	2
+lr	0.0001
+dropout	0.2000
+nepochs	400
+batch_size	1
