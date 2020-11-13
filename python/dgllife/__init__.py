@@ -10,7 +10,10 @@ from . import model
 
 try:
     import rdkit
-    from . import data
-    from . import utils
+    # from . import data
+    # from . import utils
 except ImportError:
     print('RDKit is not installed, which is required for utils related to cheminformatics')
+
+from . import data
+from . import utils
