@@ -615,7 +615,7 @@ def download_data(dataset, fname):
         return
 
     data_path = fname
-    download(_get_dgl_url(os.path.join('dataset', fname)), path=data_path)
+    # download(_get_dgl_url(os.path.join('dataset', fname)), path=data_path)
 
 def load_smiles_from_file(f_name):
     """Load dataset into a list of SMILES
