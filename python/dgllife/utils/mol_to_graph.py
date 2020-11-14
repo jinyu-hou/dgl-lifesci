@@ -13,7 +13,7 @@ import dgl
 
 from rdkit import Chem
 from rdkit.Chem import rdmolfiles, rdmolops
-from sklearn.neighbors import NearestNeighbors
+# from sklearn.neighbors import NearestNeighbors
 
 __all__ = ['mol_to_graph',
            'smiles_to_bigraph',
@@ -622,91 +622,91 @@ def smiles_to_complete_graph(smiles, add_self_loop=False,
     return mol_to_complete_graph(mol, add_self_loop, node_featurizer, edge_featurizer,
                                  canonical_atom_order, explicit_hydrogens, num_virtual_nodes)
 
-def k_nearest_neighbors(coordinates, neighbor_cutoff, max_num_neighbors=None,
-                        p_distance=2, self_loops=False):
-    """Find k nearest neighbors for each atom
+# def k_nearest_neighbors(coordinates, neighbor_cutoff, max_num_neighbors=None,
+#                         p_distance=2, self_loops=False):
+#     """Find k nearest neighbors for each atom
 
-    We do not guarantee that the edges are sorted according to the distance
-    between atoms.
+#     We do not guarantee that the edges are sorted according to the distance
+#     between atoms.
 
-    Parameters
-    ----------
-    coordinates : numpy.ndarray of shape (N, D)
-        The coordinates of atoms in the molecule. N for the number of atoms
-        and D for the dimensions of the coordinates.
-    neighbor_cutoff : float
-        If the distance between a pair of nodes is larger than neighbor_cutoff,
-        they will not be considered as neighboring nodes.
-    max_num_neighbors : int or None.
-        If not None, then this specifies the maximum number of neighbors
-        allowed for each atom. Default to None.
-    p_distance : int
-        We compute the distance between neighbors using Minkowski (:math:`l_p`)
-        distance. When ``p_distance = 1``, Minkowski distance is equivalent to
-        Manhattan distance. When ``p_distance = 2``, Minkowski distance is
-        equivalent to the standard Euclidean distance. Default to 2.
-    self_loops : bool
-        Whether to allow a node to be its own neighbor. Default to False.
+#     Parameters
+#     ----------
+#     coordinates : numpy.ndarray of shape (N, D)
+#         The coordinates of atoms in the molecule. N for the number of atoms
+#         and D for the dimensions of the coordinates.
+#     neighbor_cutoff : float
+#         If the distance between a pair of nodes is larger than neighbor_cutoff,
+#         they will not be considered as neighboring nodes.
+#     max_num_neighbors : int or None.
+#         If not None, then this specifies the maximum number of neighbors
+#         allowed for each atom. Default to None.
+#     p_distance : int
+#         We compute the distance between neighbors using Minkowski (:math:`l_p`)
+#         distance. When ``p_distance = 1``, Minkowski distance is equivalent to
+#         Manhattan distance. When ``p_distance = 2``, Minkowski distance is
+#         equivalent to the standard Euclidean distance. Default to 2.
+#     self_loops : bool
+#         Whether to allow a node to be its own neighbor. Default to False.
 
-    Returns
-    -------
-    srcs : list of int
-        Source nodes.
-    dsts : list of int
-        Destination nodes, corresponding to ``srcs``.
-    distances : list of float
-        Distances between the end nodes, corresponding to ``srcs`` and ``dsts``.
+#     Returns
+#     -------
+#     srcs : list of int
+#         Source nodes.
+#     dsts : list of int
+#         Destination nodes, corresponding to ``srcs``.
+#     distances : list of float
+#         Distances between the end nodes, corresponding to ``srcs`` and ``dsts``.
 
-    Examples
-    --------
-    >>> from dgllife.utils import get_mol_3d_coordinates, k_nearest_neighbors
-    >>> from rdkit import Chem
-    >>> from rdkit.Chem import AllChem
+#     Examples
+#     --------
+#     >>> from dgllife.utils import get_mol_3d_coordinates, k_nearest_neighbors
+#     >>> from rdkit import Chem
+#     >>> from rdkit.Chem import AllChem
 
-    >>> mol = Chem.MolFromSmiles('CC1(C(N2C(S1)C(C2=O)NC(=O)CC3=CC=CC=C3)C(=O)O)C')
-    >>> AllChem.EmbedMolecule(mol)
-    >>> AllChem.MMFFOptimizeMolecule(mol)
-    >>> coords = get_mol_3d_coordinates(mol)
-    >>> srcs, dsts, dists = k_nearest_neighbors(coords, neighbor_cutoff=1.25)
-    >>> print(srcs)
-    [8, 7, 11, 10, 20, 19]
-    >>> print(dsts)
-    [7, 8, 10, 11, 19, 20]
-    >>> print(dists)
-    [1.2084666104583117, 1.2084666104583117, 1.226457824344217,
-     1.226457824344217, 1.2230522248065987, 1.2230522248065987]
+#     >>> mol = Chem.MolFromSmiles('CC1(C(N2C(S1)C(C2=O)NC(=O)CC3=CC=CC=C3)C(=O)O)C')
+#     >>> AllChem.EmbedMolecule(mol)
+#     >>> AllChem.MMFFOptimizeMolecule(mol)
+#     >>> coords = get_mol_3d_coordinates(mol)
+#     >>> srcs, dsts, dists = k_nearest_neighbors(coords, neighbor_cutoff=1.25)
+#     >>> print(srcs)
+#     [8, 7, 11, 10, 20, 19]
+#     >>> print(dsts)
+#     [7, 8, 10, 11, 19, 20]
+#     >>> print(dists)
+#     [1.2084666104583117, 1.2084666104583117, 1.226457824344217,
+#      1.226457824344217, 1.2230522248065987, 1.2230522248065987]
 
-    See Also
-    --------
-    get_mol_3d_coordinates
-    mol_to_nearest_neighbor_graph
-    smiles_to_nearest_neighbor_graph
-    """
-    num_atoms = coordinates.shape[0]
-    model = NearestNeighbors(radius=neighbor_cutoff, p=p_distance)
-    model.fit(coordinates)
-    dists_, nbrs = model.radius_neighbors(coordinates)
-    srcs, dsts, dists = [], [], []
-    for i in range(num_atoms):
-        dists_i = dists_[i].tolist()
-        nbrs_i = nbrs[i].tolist()
-        if not self_loops:
-            dists_i.remove(0)
-            nbrs_i.remove(i)
-        if max_num_neighbors is not None and len(nbrs_i) > max_num_neighbors:
-            packed_nbrs = list(zip(dists_i, nbrs_i))
-            # Sort neighbors based on distance from smallest to largest
-            packed_nbrs.sort(key=lambda tup: tup[0])
-            dists_i, nbrs_i = map(list, zip(*packed_nbrs))
-            dsts.extend([i for _ in range(max_num_neighbors)])
-            srcs.extend(nbrs_i[:max_num_neighbors])
-            dists.extend(dists_i[:max_num_neighbors])
-        else:
-            dsts.extend([i for _ in range(len(nbrs_i))])
-            srcs.extend(nbrs_i)
-            dists.extend(dists_i)
+#     See Also
+#     --------
+#     get_mol_3d_coordinates
+#     mol_to_nearest_neighbor_graph
+#     smiles_to_nearest_neighbor_graph
+#     """
+#     num_atoms = coordinates.shape[0]
+#     model = NearestNeighbors(radius=neighbor_cutoff, p=p_distance)
+#     model.fit(coordinates)
+#     dists_, nbrs = model.radius_neighbors(coordinates)
+#     srcs, dsts, dists = [], [], []
+#     for i in range(num_atoms):
+#         dists_i = dists_[i].tolist()
+#         nbrs_i = nbrs[i].tolist()
+#         if not self_loops:
+#             dists_i.remove(0)
+#             nbrs_i.remove(i)
+#         if max_num_neighbors is not None and len(nbrs_i) > max_num_neighbors:
+#             packed_nbrs = list(zip(dists_i, nbrs_i))
+#             # Sort neighbors based on distance from smallest to largest
+#             packed_nbrs.sort(key=lambda tup: tup[0])
+#             dists_i, nbrs_i = map(list, zip(*packed_nbrs))
+#             dsts.extend([i for _ in range(max_num_neighbors)])
+#             srcs.extend(nbrs_i[:max_num_neighbors])
+#             dists.extend(dists_i[:max_num_neighbors])
+#         else:
+#             dsts.extend([i for _ in range(len(nbrs_i))])
+#             srcs.extend(nbrs_i)
+#             dists.extend(dists_i)
 
-    return srcs, dsts, dists
+#     return srcs, dsts, dists
 
 # pylint: disable=E1102
 def mol_to_nearest_neighbor_graph(mol,
