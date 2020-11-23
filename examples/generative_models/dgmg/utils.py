@@ -590,11 +590,10 @@ def preprocess_dataset(atom_types, bond_types, smiles, max_num_atoms=200):
         canonical_mol = Chem.MolFromSmiles(canonical_s)
         random_mol = Chem.MolFromSmiles(random_s)
 
-        if (standard_s != canonical_s) or (canonical_s != random_s) or (canonical_mol is None) or (random_mol is None):
-            continue
+        # if (standard_s != canonical_s) or (canonical_s != random_s) or (canonical_mol is None) or (random_mol is None):
+        #     continue
 
         valid_smiles.append(standard_s)
-        # valid_smiles.append(raw_s)
 
     valid_smiles = list(set(valid_smiles))
     print(f"valid smiles: {len(valid_smiles)}\n")
