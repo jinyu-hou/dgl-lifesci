@@ -1049,3 +1049,11 @@ def get_novel_smiles(new_unique_smiles, reference_unique_smiles):
         List of reference SMILES that we already have
     """
     return set(new_unique_smiles).difference(set(reference_unique_smiles))
+
+
+# if __name__ == "__main__":
+    # test_smiles = ["FC(=[Si](OOOOOOOOOI)OOOOO[Se]OOOOOOOOOC1(F)OOOSSSS[Se][Si](F)(Cl)S1)[Si](Br)(Br)I"]
+    # test_smiles = ["C#CC1C2C(C(C#CC3NC4CC5NC(C#CC6C7C(CC8C6C(=O)[SI](C)(C)C8=O)C(=O)N(C)C7=O)N(C)C5CC4N3C)C3C1C(=O)[SI](C)(C)C3=O)C(=O)N(C)C2=O"]
+    # test_smiles = ["Cc1c2cc(-c3c4c(cn3C)C(=O)C(C)(C)C4=O)sc2c(C)c2cc(-c3c4c(cc5c3C(=O)C(C)(C)C5=O)C(=O)N(C)C4=O)sc12"]
+    # atom_types, bond_types = get_atom_and_bond_types(test_smiles)
+    # print(atom_types, bond_types)
