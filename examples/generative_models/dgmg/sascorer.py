@@ -39,7 +39,7 @@ def readFragmentScores(name='fpscores'):
     import gzip
     global _fscores
     fname = '{}.pkl.gz'.format(name)
-    download(_get_dgl_url(os.path.join('dataset', fname)), path=fname)
+    # download(_get_dgl_url(os.path.join('dataset', fname)), path=fname)
     _fscores = cPickle.load(gzip.open(fname))
     outDict = {}
     for i in _fscores:
